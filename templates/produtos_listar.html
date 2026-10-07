@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos - Papelaria{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center page-header gap-3">
+
+    <div>
+        <h1 class="h2 mb-1">
+            <i class="bi bi-box-seam me-2"></i>
+            Produtos
+        </h1>
+
+        <p class="text-muted mb-0">
+            Gerencie os produtos disponíveis para venda.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('produtos_cadastrar') }}"
+        class="btn btn-primary"
+    >
+        <i class="bi bi-plus-lg me-1"></i>
+        Novo produto
+    </a>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Item</th>
+                        <th>Código de Barras</th>
+                        <th>Preço de Venda</th>
+                        <th>Estoque</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for produto in produtos %}
+
+                    <tr>
+
+                        <td>{{ produto.id }}</td>
+
+                        <td>
+                            <strong>{{ produto.nome }}</strong>
+                        </td>
+
+                        <td>
+                            <code>{{ produto.codigo_barras }}</code>
+                        </td>
+
+                        <td>
+                            R$ {{ "%.2f"|format(produto.preco_venda)|replace(".", ",") }}
+                        </td>
+
+                        <td>
+                            {% if produto.estoque_atual <= 10 %}
+
+                                <span class="low-stock">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ produto.estoque_atual }}
+                                </span>
+
+                            {% else %}
+
+                                {{ produto.estoque_atual }}
+
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+
+                            <a
+                                href="{{ url_for('produto_visualizar', id=produto.id) }}"
+                                class="btn btn-sm btn-outline-primary"
+                                title="Visualizar"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            <form
+                                action="{{ url_for('produto_excluir', id=produto.id) }}"
+                                method="POST"
+                                class="d-inline"
+                                onsubmit="return confirm('Deseja realmente excluir este produto?');"
+                            >
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Excluir"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-box fs-1 text-muted"></i>
+
+                            <p class="text-muted mt-2 mb-0">
+                                Nenhum produto cadastrado.
+                            </p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

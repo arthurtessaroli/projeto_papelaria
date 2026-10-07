@@ -35,6 +35,30 @@ usuarios = [
     },
 ]
 
+produtos = [
+    {
+        "id": 1,
+        "nome": "Caderno Universitário",
+        "codigo_barras": "7891234567890",
+        "preco_venda": 24.90,
+        "estoque_atual": 35,
+    },
+    {
+        "id": 2,
+        "nome": "Caneta Esferográfica Azul",
+        "codigo_barras": "7899876543210",
+        "preco_venda": 2.50,
+        "estoque_atual": 120,
+    },
+    {
+        "id": 3,
+        "nome": "Lápis HB",
+        "codigo_barras": "7894561237890",
+        "preco_venda": 1.75,
+        "estoque_atual": 80,
+    },
+]
+
 @app.route("/")
 def index():
     """Redireciona para a página inicial de usuários."""
@@ -55,6 +79,73 @@ def produtos_listar():
         "produtos_listar.html",
         produtos=produtos
     )    
+
+
+@app.route("/produtos/cadastrar", methods=["GET", "POST"])
+def produtos_cadastrar():
+    """Exibe o formulário e cadastra um novo produto."""
+
+    if request.method == "POST":
+        try:
+            preco_venda = float(
+                request.form.get("preco_venda", "0").replace(",", ".")
+            )
+        except ValueError:
+            preco_venda = 0
+
+        try:
+            estoque_atual = int(
+                request.form.get("estoque_atual", "0")
+            )
+        except ValueError:
+            estoque_atual = 0
+
+        produto = {
+            "id": proximo_id(produtos),
+            "nome": request.form.get("nome", "").strip(),
+            "codigo_barras": request.form.get("codigo_barras", "").strip(),
+            "preco_venda": preco_venda,
+            "estoque_atual": estoque_atual,
+        }
+
+        produtos.append(produto)
+
+        return redirect(url_for("produtos_listar"))
+
+    return render_template("produtos_cadastrar.html")
+
+
+@app.route("/produtos/<int:id>")
+def produto_visualizar(id):
+    """Exibe os dados de um produto específico."""
+
+    produto = next(
+        (item for item in produtos if item["id"] == id),
+        None
+    )
+
+    if produto is None:
+        return "Produto não encontrado", 404
+
+    return render_template(
+        "produtos_listar.html",
+        produtos=[produto],
+        visualizacao=True
+    )
+
+
+@app.route("/produtos/<int:id>/excluir", methods=["POST"])
+def produto_excluir(id):
+    """Exclui um produto da lista simulada."""
+
+    global produtos
+
+    produtos = [
+        produto for produto in produtos
+        if produto["id"] != id
+    ]
+
+    return redirect(url_for("produtos_listar"))
 
 @app.route("/fornecedores")
 def fornecedores_listar():
