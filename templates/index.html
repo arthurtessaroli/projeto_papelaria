@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Início - Papelaria{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <div class="home-image-container">
+
+        <img
+            src="{{ url_for('static', filename='imgs/papelaria.jpg') }}"
+            alt="Imagem da Papelaria"
+            class="home-image"
+        >
+
+    </div>
+
+</div>
+
+{% endblock %}
