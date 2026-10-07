@@ -17,8 +17,7 @@
         </p>
     </div>
 
-    <a
-    >
+    <a href="{{ url_for('usuarios_cadastrar') }}" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>
         Novo usuário
     </a>
@@ -62,37 +61,26 @@
 
                         <td>
                             {% if usuario.nivel_acesso == "admin" %}
-                                <span class="badge badge-admin">
-                                    Administrador
-                                </span>
+                            <span class="badge badge-admin">
+                                Administrador
+                            </span>
                             {% else %}
-                                <span class="badge badge-user">
-                                    Usuário
-                                </span>
+                            <span class="badge badge-user">
+                                Usuário
+                            </span>
                             {% endif %}
                         </td>
 
                         <td class="text-end">
 
-                            <a
-                                href=""
-                                class="btn btn-sm btn-outline-primary"
-                                title="Visualizar"
-                            >
+                            <a href="{{ url_for('usuario_visualizar', id=usuario.id) }}"
+                                class="btn btn-sm btn-outline-primary" title="Visualizar">
                                 <i class="bi bi-eye"></i>
                             </a>
 
-                            <form
-                                action=""
-                                method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Deseja realmente excluir este usuário?');"
-                            >
-                                <button
-                                    type="submit"
-                                    class="btn btn-sm btn-outline-danger"
-                                    title="Excluir"
-                                >
+                            <form action="{{ url_for('usuario_excluir', id=usuario.id) }}" method="POST"
+                                class="d-inline" onsubmit="return confirm('Deseja realmente excluir este usuário?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>

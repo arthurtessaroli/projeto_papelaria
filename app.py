@@ -35,6 +35,7 @@ usuarios = [
     },
 ]
 
+<<<<<<< Updated upstream
 produtos = [
     {
         "id": 1,
@@ -82,27 +83,79 @@ def proximo_id(lista):
         return 1
 
     return max(item["id"] for item in lista) + 1
+=======
+>>>>>>> Stashed changes
 
 @app.route("/")
 def index():
     """Redireciona para a página inicial de usuários."""
-    return render_template('index.html')
+    return render_template("index.html")
+
 
 @app.route("/usuarios")
 def usuarios_listar():
     """Exibe a lista de usuários."""
+    return render_template("usuarios_listar.html", usuarios=usuarios)
+
+
+@app.route("/usuarios/cadastrar", methods=["GET", "POST"])
+def usuarios_cadastrar():
+    """Exibe o formulário e cadastra um novo usuário."""
+
+    if request.method == "POST":
+        usuario = {
+            "id": proximo_id(usuarios),
+            "nome": request.form.get("nome", "").strip(),
+            "email": request.form.get("email", "").strip(),
+            "celular": request.form.get("celular", "").strip(),
+            "data_nasc": request.form.get("data_nasc", ""),
+            "doc_nac": request.form.get("doc_nac", "").strip(),
+            "nivel_acesso": request.form.get("nivel_acesso", "user"),
+            "cep": request.form.get("cep", "").strip(),
+            "endereco": request.form.get("endereco", "").strip(),
+            "numero": request.form.get("numero", "").strip(),
+            "complemento": request.form.get("complemento", "").strip(),
+            "cidade": request.form.get("cidade", "").strip(),
+            "estado": request.form.get("estado", "").strip(),
+        }
+
+        usuarios.append(usuario)
+
+        return redirect(url_for("usuarios_listar"))
+
+    return render_template("usuarios_cadastrar.html")
+
+
+@app.route("/usuarios/<int:id>")
+def usuario_visualizar(id):
+    """Exibe os dados de um usuário específico."""
+
+    usuario = next((item for item in usuarios if item["id"] == id), None)
+
+    if usuario is None:
+        return "Usuário não encontrado", 404
+
     return render_template(
-        "usuarios_listar.html",
-        usuarios=usuarios
+        "usuarios_listar.html", usuarios=[usuario], visualizacao=True
     )
+
+
+@app.route("/usuarios/<int:id>/excluir", methods=["POST"])
+def usuario_excluir(id):
+    """Exclui um usuário da lista simulada."""
+
+    global usuarios
+
+    usuarios = [usuario for usuario in usuarios if usuario["id"] != id]
+
+    return redirect(url_for("usuarios_listar"))
+
 
 @app.route("/produtos")
 def produtos_listar():
     """Exibe a lista de produtos."""
-    return render_template(
-        "produtos_listar.html",
-        produtos=produtos
-    )    
+    return render_template("produtos_listar.html", produtos=produtos)
+
 
 
 @app.route("/produtos/cadastrar", methods=["GET", "POST"])
@@ -174,10 +227,7 @@ def produto_excluir(id):
 @app.route("/fornecedores")
 def fornecedores_listar():
     """Exibe a lista de fornecedores."""
-    return render_template(
-        "fornecedores_listar.html",
-        fornecedores=fornecedores
-    )
+    return render_template("fornecedores_listar.html", fornecedores=fornecedores)
 
 
 @app.route("/fornecedores/cadastrar", methods=["GET", "POST"])
