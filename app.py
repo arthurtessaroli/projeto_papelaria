@@ -59,6 +59,30 @@ produtos = [
     },
 ]
 
+fornecedores = [
+    {
+        "id": 1,
+        "razao_social": "Distribuidora Papel & Cia Ltda.",
+        "cnpj": "12.345.678/0001-90",
+        "telefone": "(11) 3333-4444",
+        "principal_produto": "Cadernos",
+    },
+    {
+        "id": 2,
+        "razao_social": "ABC Materiais Escolares Ltda.",
+        "cnpj": "98.765.432/0001-10",
+        "telefone": "(11) 5555-6666",
+        "principal_produto": "Canetas e lápis",
+    },
+]
+
+def proximo_id(lista):
+    """Retorna um novo ID baseado no maior ID existente."""
+    if not lista:
+        return 1
+
+    return max(item["id"] for item in lista) + 1
+
 @app.route("/")
 def index():
     """Redireciona para a página inicial de usuários."""
@@ -154,6 +178,68 @@ def fornecedores_listar():
         "fornecedores_listar.html",
         fornecedores=fornecedores
     )
+
+
+@app.route("/fornecedores/cadastrar", methods=["GET", "POST"])
+def fornecedores_cadastrar():
+    """Exibe o formulário e cadastra um novo fornecedor."""
+
+    if request.method == "POST":
+        fornecedor = {
+            "id": proximo_id(fornecedores),
+            "razao_social": request.form.get(
+                "razao_social", ""
+            ).strip(),
+            "cnpj": request.form.get(
+                "cnpj", ""
+            ).strip(),
+            "telefone": request.form.get(
+                "telefone", ""
+            ).strip(),
+            "principal_produto": request.form.get(
+                "principal_produto", ""
+            ).strip(),
+        }
+
+        fornecedores.append(fornecedor)
+
+        return redirect(url_for("fornecedores_listar"))
+
+    return render_template("fornecedores_cadastrar.html")
+
+
+@app.route("/fornecedores/<int:id>")
+def fornecedor_visualizar(id):
+    """Exibe os dados de um fornecedor específico."""
+
+    fornecedor = next(
+        (item for item in fornecedores if item["id"] == id),
+        None
+    )
+
+    if fornecedor is None:
+        return "Fornecedor não encontrado", 404
+
+    return render_template(
+        "fornecedores_listar.html",
+        fornecedores=[fornecedor],
+        visualizacao=True
+    )
+
+
+@app.route("/fornecedores/<int:id>/excluir", methods=["POST"])
+def fornecedor_excluir(id):
+    """Exclui um fornecedor da lista simulada."""
+
+    global fornecedores
+
+    fornecedores = [
+        fornecedor for fornecedor in fornecedores
+        if fornecedor["id"] != id
+    ]
+
+    return redirect(url_for("fornecedores_listar"))
+
 
 
 # ============================================================
