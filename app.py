@@ -35,7 +35,6 @@ usuarios = [
     },
 ]
 
-<<<<<<< Updated upstream
 produtos = [
     {
         "id": 1,
@@ -83,8 +82,6 @@ def proximo_id(lista):
         return 1
 
     return max(item["id"] for item in lista) + 1
-=======
->>>>>>> Stashed changes
 
 @app.route("/")
 def index():
