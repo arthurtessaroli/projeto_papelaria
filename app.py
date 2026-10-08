@@ -76,6 +76,11 @@ fornecedores = [
     },
 ]
 
+# Credenciais fixas, só para a atividade
+LOGIN_EMAIL = "admin@papelaria.com"
+LOGIN_SENHA = "123456"
+
+
 def proximo_id(lista):
     """Retorna um novo ID baseado no maior ID existente."""
     if not lista:
@@ -83,9 +88,34 @@ def proximo_id(lista):
 
     return max(item["id"] for item in lista) + 1
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
+def login():
+    """Exibe a tela de login e confere e-mail e senha."""
+
+    erros = []
+    email = ""
+
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        senha = request.form.get("senha", "").strip()
+
+        if not email:
+            erros.append("O e-mail é obrigatório.")
+        if not senha:
+            erros.append("A senha é obrigatória.")
+
+        # Campos preenchidos: confere e-mail e senha
+        if not erros:
+            if email == LOGIN_EMAIL and senha == LOGIN_SENHA:
+                return redirect(url_for("index"))
+            erros.append("E-mail ou senha incorretos.")
+
+    return render_template("login.html", email=email, erros=erros)
+
+
+@app.route("/inicio")
 def index():
-    """Redireciona para a página inicial de usuários."""
+    """Página inicial, aberta depois do login."""
     return render_template("index.html")
 
 
@@ -295,3 +325,4 @@ def fornecedor_excluir(id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
