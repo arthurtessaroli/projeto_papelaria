@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Cadastrar Usuário - Papelaria{% endblock %}
+{% block title %}Cadastrar Produto - Papelaria{% endblock %}
 
 {% block content %}
 
 <div class="page-header">
     <h1 class="h2 mb-1">
-        <i class="bi bi-person-plus me-2"></i>
-        Cadastrar Usuário
+        <i class="bi bi-box-seam me-2"></i>
+        Cadastrar Produto
     </h1>
 
     <p class="text-muted">
-        Preencha os dados para cadastrar um novo usuário.
+        Cadastre um novo item disponível para venda.
     </p>
 </div>
 
@@ -27,15 +27,16 @@
         <div class="card-body">
 
             <h5 class="mb-4">
-                <i class="bi bi-person me-2"></i>
-                Dados pessoais
+                <i class="bi bi-info-circle me-2"></i>
+                Informações do produto
             </h5>
 
             <div class="row g-3">
 
                 <div class="col-md-6">
+
                     <label class="form-label">
-                        Nome *
+                        Nome do Item *
                     </label>
 
                     <input
@@ -43,253 +44,86 @@
                         name="nome"
                         class="form-control"
                         required
-                        minlength="3"
+                        minlength="2"
                     >
 
                     <div class="invalid-feedback">
-                        Informe o nome do usuário.
+                        Informe o nome do produto.
                     </div>
+
                 </div>
 
 
                 <div class="col-md-6">
+
                     <label class="form-label">
-                        E-mail *
-                    </label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe um e-mail válido.
-                    </div>
-                </div>
-
-
-                <div class="col-md-4">
-                    <label class="form-label">
-                        Celular *
-                    </label>
-
-                    <input
-                        type="tel"
-                        name="celular"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe o celular.
-                    </div>
-                </div>
-
-
-                <div class="col-md-4">
-                    <label class="form-label">
-                        Data de nascimento *
-                    </label>
-
-                    <input
-                        type="date"
-                        name="data_nasc"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe a data de nascimento.
-                    </div>
-                </div>
-
-
-                <div class="col-md-4">
-                    <label class="form-label">
-                        Documento Nacional *
+                        Código de Barras *
                     </label>
 
                     <input
                         type="text"
-                        name="doc_nac"
+                        name="codigo_barras"
                         class="form-control"
                         required
+                        minlength="8"
                     >
 
                     <div class="invalid-feedback">
-                        Informe o documento.
+                        Informe o código de barras.
                     </div>
+
                 </div>
 
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+
                     <label class="form-label">
-                        Nível de acesso *
+                        Preço de Venda *
                     </label>
 
-                    <select
-                        name="nivel_acesso"
-                        class="form-select"
-                        required
-                    >
-                        <option value="">Selecione...</option>
-                        <option value="user">Usuário</option>
-                        <option value="admin">Administrador</option>
-                    </select>
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            R$
+                        </span>
+
+                        <input
+                            type="number"
+                            name="preco_venda"
+                            class="form-control"
+                            min="0.01"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
 
                     <div class="invalid-feedback">
-                        Selecione o nível de acesso.
+                        Informe um preço válido.
                     </div>
+
                 </div>
 
-            </div>
 
-        </div>
+                <div class="col-md-6">
 
-    </div>
-
-
-    <div class="card mb-4">
-
-        <div class="card-body">
-
-            <h5 class="mb-4">
-                <i class="bi bi-geo-alt me-2"></i>
-                Endereço
-            </h5>
-
-            <div class="row g-3">
-
-                <div class="col-md-3">
                     <label class="form-label">
-                        CEP *
+                        Estoque Atual *
                     </label>
 
                     <input
-                        type="text"
-                        name="cep"
+                        type="number"
+                        name="estoque_atual"
                         class="form-control"
+                        min="0"
+                        step="1"
                         required
                     >
 
                     <div class="invalid-feedback">
-                        Informe o CEP.
+                        Informe a quantidade em estoque.
                     </div>
-                </div>
 
-
-                <div class="col-md-7">
-                    <label class="form-label">
-                        Endereço *
-                    </label>
-
-                    <input
-                        type="text"
-                        name="endereco"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe o endereço.
-                    </div>
-                </div>
-
-
-                <div class="col-md-2">
-                    <label class="form-label">
-                        Número *
-                    </label>
-
-                    <input
-                        type="text"
-                        name="numero"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe o número.
-                    </div>
-                </div>
-
-
-                <div class="col-md-5">
-                    <label class="form-label">
-                        Complemento
-                    </label>
-
-                    <input
-                        type="text"
-                        name="complemento"
-                        class="form-control"
-                    >
-                </div>
-
-
-                <div class="col-md-5">
-                    <label class="form-label">
-                        Cidade *
-                    </label>
-
-                    <input
-                        type="text"
-                        name="cidade"
-                        class="form-control"
-                        required
-                    >
-
-                    <div class="invalid-feedback">
-                        Informe a cidade.
-                    </div>
-                </div>
-
-
-                <div class="col-md-2">
-                    <label class="form-label">
-                        Estado *
-                    </label>
-
-                    <select
-                        name="estado"
-                        class="form-select"
-                        required
-                    >
-                        <option value="">UF</option>
-                        <option>AC</option>
-                        <option>AL</option>
-                        <option>AP</option>
-                        <option>AM</option>
-                        <option>BA</option>
-                        <option>CE</option>
-                        <option>DF</option>
-                        <option>ES</option>
-                        <option>GO</option>
-                        <option>MA</option>
-                        <option>MT</option>
-                        <option>MS</option>
-                        <option>MG</option>
-                        <option>PA</option>
-                        <option>PB</option>
-                        <option>PR</option>
-                        <option>PE</option>
-                        <option>PI</option>
-                        <option>RJ</option>
-                        <option>RN</option>
-                        <option>RS</option>
-                        <option>RO</option>
-                        <option>RR</option>
-                        <option>SC</option>
-                        <option>SP</option>
-                        <option>SE</option>
-                        <option>TO</option>
-                    </select>
-
-                    <div class="invalid-feedback">
-                        Selecione o estado.
-                    </div>
                 </div>
 
             </div>
@@ -302,7 +136,7 @@
     <div class="d-flex gap-2">
 
         <a
-            href="{{ url_for('usuarios_listar') }}"
+            href="{{ url_for('produtos_listar') }}"
             class="btn btn-outline-secondary"
         >
             Cancelar
@@ -313,7 +147,7 @@
             class="btn btn-primary"
         >
             <i class="bi bi-check-lg me-1"></i>
-            Cadastrar usuário
+            Cadastrar produto
         </button>
 
     </div>
