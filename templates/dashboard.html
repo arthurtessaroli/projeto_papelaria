@@ -1,22 +1,35 @@
-{% extends "base.html" %}
+{% extends 'layout/base_menu.html' %}
 
-{% block title %}Início - Papelaria{% endblock %}
+{% block titulo_aba %}{{ titulo }}{% endblock %}
 
-{% block content %}
+{% block conteudo %}
+  <h1>{{ titulo }}</h1>
+  <p class="lead">O Flask está conectado ao banco <strong>gestao</strong>.</p>
 
-<div class="home-page">
-
-    <div class="home-image-container">
-
-        <img
-        style="max-width: 100%;"
-            src="{{ url_for('static', filename='imgs/papelaria.jpg') }}"
-            alt="Imagem da Papelaria"
-            class="home-image"
-        >
-
+  <div class="row g-3">
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <p class="display-5 mb-0">{{ total_perfis }}</p>
+          <p class="text-body-secondary mb-0">perfis</p>
+        </div>
+      </div>
     </div>
-
-</div>
-
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <p class="display-5 mb-0">{{ total_usuarios }}</p>
+          <p class="text-body-secondary mb-0">usuários</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <p class="display-5 mb-0">{{ total_produtos }}</p>
+          <p class="text-body-secondary mb-0">produtos</p>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

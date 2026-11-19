@@ -1,13 +1,20 @@
+import os
+
+from dotenv import load_dotenv
 from mysql.connector import Error, pooling
 
-# Troque SUA_SENHA_AQUI e NOME_BANCO_DADOS pelos valores do seu computador.
-# Senha e dados de conexão no código são provisórios, só para o projeto de sala.
-# Num sistema de verdade, ficam fora do código (o .env aparece no Capítulo 11).
+# Lê o arquivo .env e coloca cada linha dele nas variáveis de ambiente do programa.
+load_dotenv()
+
+if os.getenv('DB_NAME') is None:
+    raise RuntimeError('Não encontrei o arquivo .env. Copie o .env.example para .env e preencha.')
+
 CONFIGURACAO = {
-    'host': '127.0.0.1',
-    'user': 'root',
-    'password': '',
-    'database': 'mysql',
+    'host': os.getenv('DB_HOST'),
+    'port': int(os.getenv('DB_PORT', '3306')),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD', ''),
+    'database': os.getenv('DB_NAME'),
     'charset': 'utf8mb4',
     'sql_mode': (
         'STRICT_TRANS_TABLES,NO_ZERO_DATE,'
@@ -17,7 +24,8 @@ CONFIGURACAO = {
     'use_pure': True,  # conector em Python puro, evita erros com XAMPP e MySQL juntos
 }
 
-pool = pooling.MySQLConnectionPool(pool_name='catalogo_pool', pool_size=5, **CONFIGURACAO)
+pool = pooling.MySQLConnectionPool(pool_name='gestao_pool', pool_size=5, **CONFIGURACAO)
+
 
 def execute_query(sql, params=None, fetch=False):
     if params is None:
@@ -43,6 +51,7 @@ def execute_query(sql, params=None, fetch=False):
         cursor.close()
         conexao.close()
 
+
 def execute_one(sql, params=None):
     linhas = execute_query(sql, params, fetch=True)
 
@@ -50,3 +59,22 @@ def execute_one(sql, params=None):
         return linhas[0]
 
     return None
+
+
+def execute_insert(sql, params=None):
+    if params is None:
+        params = ()
+
+    conexao = pool.get_connection()
+    cursor = conexao.cursor()
+
+    try:
+        cursor.execute(sql, params)
+        conexao.commit()
+        return cursor.lastrowid
+    except Error:
+        conexao.rollback()
+        raise
+    finally:
+        cursor.close()
+        conexao.close()

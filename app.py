@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
 from flask_wtf.csrf import CSRFProtect
 
-from db import execute_one
+from db import execute_one, execute_query
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -141,14 +141,17 @@ def dashboard():
 def inserir_perfil():
 
     if request.method == 'POST':
-        redirect(url_for(listar_perfis))
+        redirect(url_for('listar_perfis'))
 
     return render_template('perfis/perfil-form.html')
 
 @app.route('/perfis/')
 def listar_perfis():
-
-    return render_template('perfis/perfis_listar.html')
+    perfis = execute_query(
+        'SELECT id_perfil, nome, descricao, criado_em FROM perfis ORDER BY nome',
+        fetch=True
+    )
+    return render_template('perfis/perfis_listar.html', perfis=perfis)
 
 
 # =======================================================================================================================

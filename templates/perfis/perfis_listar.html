@@ -21,11 +21,13 @@
     </thead>
 
     <tbody>
+        {% for perfil in perfis %}
+
         <tr>
-            <td>1</td>
-            <td>Administrador</td>
-            <td>Pode tudo!</td>
-            <td>19/11/2026</td>
+            <td>{{ perfil.id_perfil }}</td>
+            <td>{{ perfil.nome }}</td>
+            <td>{{ perfil.descricao }}</td>
+            <td>{{ perfil.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
             <td>
                 <a href="" class="btn btn-sm btn-warning">
                     <i class="bi bi-pencil-square"></i>
@@ -36,6 +38,14 @@
                 </button>
             </td>
         </tr>
+
+        {% else %}
+
+        <tr>
+            <td colspan="5" class="text-center">Nenhum registro no Banco de Dados!</td>
+        </tr>
+
+        {% endfor %}
     </tbody>
 </table>
 
