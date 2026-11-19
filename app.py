@@ -1,6 +1,16 @@
+import os #pacote que controla o sistema operacional , serve para pegar o arquivo env
+
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
+from flask_wtf.csrf import CSRFProtect
+
+from db import execute_one
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
+
+# Liga a proteção CSRF: todo formulário POST do sistema vai precisar do token
+CSRFProtect(app)
 
 usuarios = [
     {
@@ -88,8 +98,12 @@ def proximo_id(lista):
 
     return max(item["id"] for item in lista) + 1
 
+# =======================================================================================================================
+# INÍCIO
+# =======================================================================================================================
+
 @app.route("/", methods=["GET", "POST"])
-def login():
+def inicio():
     """Exibe a tela de login e confere e-mail e senha."""
 
     erros = []
@@ -113,11 +127,33 @@ def login():
     return render_template("login.html", email=email, erros=erros)
 
 
-@app.route("/inicio")
-def index():
+@app.route("/dashboard")
+def dashboard():
     """Página inicial, aberta depois do login."""
-    return render_template("index.html")
+    return render_template("dashboard.html")
 
+
+# =======================================================================================================================
+# PERFIL
+# =======================================================================================================================
+
+@app.route("/perfis/inserir", methods=['GET', 'POST'])
+def inserir_perfil():
+
+    if request.method == 'POST':
+        redirect(url_for(listar_perfis))
+
+    return render_template('perfis/perfil-form.html')
+
+@app.route('/perfis/')
+def listar_perfis():
+
+    return render_template('perfis/perfis_listar.html')
+
+
+# =======================================================================================================================
+# USUÁRIOS  
+# =======================================================================================================================
 
 @app.route("/usuarios")
 def usuarios_listar():
