@@ -1,10 +1,12 @@
 import os #pacote que controla o sistema operacional , serve para pegar o arquivo env
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_wtf.csrf import CSRFProtect
 
-from db import execute_one, execute_query
+from db import execute_one, execute_query, execute_insert
+
+from mysql.connector import Error
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -140,10 +142,28 @@ def dashboard():
 @app.route("/perfis/inserir", methods=['GET', 'POST'])
 def inserir_perfil():
 
-    if request.method == 'POST':
-        redirect(url_for('listar_perfis'))
+    nome = ''
+    descricao = ''
 
-    return render_template('perfis/perfil-form.html')
+    if request.method == 'POST':
+        nome = request.form.get('nome', '').strip()
+        descricao = request.form.get('descricao', '').strip()
+
+        try:
+            novo_id = execute_insert(
+                'INSERT INTO perfis (nome, descricao) VALUES (%s, %s)',
+                (nome, descricao)
+            )
+            flash(f'Perfil "{nome}" inserido com sucesso! ID: {novo_id}', 'success')
+            return redirect(url_for('listar_perfis'))
+        
+        except Error as erro:
+            if erro.errno == 1062:
+                flash('Já existe um perfil com esse nome', 'danger')
+            else:
+                raise
+
+    return render_template('perfis/perfil_form.html', nome=nome, descricao=descricao)
 
 @app.route('/perfis/')
 def listar_perfis():
