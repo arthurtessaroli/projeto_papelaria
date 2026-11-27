@@ -223,7 +223,7 @@ def excluir_perfil(id_perfil):
     try:
         execute_query('DELETE FROM perfis WHERE id_perfil = %s',
                       (id_perfil,))
-        flash(f'O perfil foi excluído.', 'success')
+        flash(f'O perfil foi excluído.', 'danger')
     except Error as erro:
         if erro.errno == 1451:
             flash('Não é possível excluir este perfil.', 'danger')
