@@ -1,96 +1,98 @@
 import os #pacote que controla o sistema operacional , serve para pegar o arquivo env
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_wtf.csrf import CSRFProtect
 
 from db import execute_one, execute_query, execute_insert
 
 from mysql.connector import Error
 
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY') or os.urandom(32)
 
 # Liga a proteção CSRF: todo formulário POST do sistema vai precisar do token
 CSRFProtect(app)
 
-usuarios = [
-    {
-        "id": 1,
-        "nome": "Ana Souza",
-        "email": "ana@papelaria.com",
-        "celular": "(14) 99999-1111",
-        "data_nasc": "1995-03-15",
-        "doc_nac": "123.456.789-00",
-        "nivel_acesso": "admin",
-        "cep": "17200-000",
-        "endereco": "Rua das Flores",
-        "numero": "100",
-        "complemento": "",
-        "cidade": "Jaú",
-        "estado": "SP",
-    },
-    {
-        "id": 2,
-        "nome": "Carlos Oliveira",
-        "email": "carlos@papelaria.com",
-        "celular": "(14) 98888-2222",
-        "data_nasc": "1998-07-22",
-        "doc_nac": "987.654.321-00",
-        "nivel_acesso": "user",
-        "cep": "17201-000",
-        "endereco": "Avenida Central",
-        "numero": "250",
-        "complemento": "Sala 2",
-        "cidade": "Jaú",
-        "estado": "SP",
-    },
-]
+# # usuarios = [
+# #     {
+# #         "id": 1,
+# #         "nome": "Ana Souza",
+# #         "email": "ana@papelaria.com",
+# #         "celular": "(14) 99999-1111",
+# #         "data_nasc": "1995-03-15",
+# #         "doc_nac": "123.456.789-00",
+# #         "nivel_acesso": "admin",
+# #         "cep": "17200-000",
+# #         "endereco": "Rua das Flores",
+# #         "numero": "100",
+# #         "complemento": "",
+# #         "cidade": "Jaú",
+# #         "estado": "SP",
+# #     },
+# #     {
+# #         "id": 2,
+# #         "nome": "Carlos Oliveira",
+# #         "email": "carlos@papelaria.com",
+# #         "celular": "(14) 98888-2222",
+# #         "data_nasc": "1998-07-22",
+# #         "doc_nac": "987.654.321-00",
+# #         "nivel_acesso": "user",
+# #         "cep": "17201-000",
+# #         "endereco": "Avenida Central",
+# #         "numero": "250",
+# #         "complemento": "Sala 2",
+# #         "cidade": "Jaú",
+# #         "estado": "SP",
+# #     },
+# # ]
 
-produtos = [
-    {
-        "id": 1,
-        "nome": "Caderno Universitário",
-        "codigo_barras": "7891234567890",
-        "preco_venda": 24.90,
-        "estoque_atual": 35,
-    },
-    {
-        "id": 2,
-        "nome": "Caneta Esferográfica Azul",
-        "codigo_barras": "7899876543210",
-        "preco_venda": 2.50,
-        "estoque_atual": 120,
-    },
-    {
-        "id": 3,
-        "nome": "Lápis HB",
-        "codigo_barras": "7894561237890",
-        "preco_venda": 1.75,
-        "estoque_atual": 80,
-    },
-]
+# # produtos = [
+# #     {
+# #         "id": 1,
+# #         "nome": "Caderno Universitário",
+# #         "codigo_barras": "7891234567890",
+# #         "preco_venda": 24.90,
+# #         "estoque_atual": 35,
+# #     },
+# #     {
+# #         "id": 2,
+# #         "nome": "Caneta Esferográfica Azul",
+# #         "codigo_barras": "7899876543210",
+# #         "preco_venda": 2.50,
+# #         "estoque_atual": 120,
+# #     },
+# #     {
+# #         "id": 3,
+# #         "nome": "Lápis HB",
+# #         "codigo_barras": "7894561237890",
+# #         "preco_venda": 1.75,
+# #         "estoque_atual": 80,
+# #     },
+# # ]
 
-fornecedores = [
-    {
-        "id": 1,
-        "razao_social": "Distribuidora Papel & Cia Ltda.",
-        "cnpj": "12.345.678/0001-90",
-        "telefone": "(11) 3333-4444",
-        "principal_produto": "Cadernos",
-    },
-    {
-        "id": 2,
-        "razao_social": "ABC Materiais Escolares Ltda.",
-        "cnpj": "98.765.432/0001-10",
-        "telefone": "(11) 5555-6666",
-        "principal_produto": "Canetas e lápis",
-    },
-]
+# # fornecedores = [
+# #     {
+# #         "id": 1,
+# #         "razao_social": "Distribuidora Papel & Cia Ltda.",
+# #         "cnpj": "12.345.678/0001-90",
+# #         "telefone": "(11) 3333-4444",
+# #         "principal_produto": "Cadernos",
+# #     },
+# #     {
+# #         "id": 2,
+# #         "razao_social": "ABC Materiais Escolares Ltda.",
+# #         "cnpj": "98.765.432/0001-10",
+# #         "telefone": "(11) 5555-6666",
+# #         "principal_produto": "Canetas e lápis",
+# #     },
+# # ]
 
-# Credenciais fixas, só para a atividade
-LOGIN_EMAIL = "admin@papelaria.com"
-LOGIN_SENHA = "123456"
+# # Credenciais fixas, só para a atividade
+# LOGIN_EMAIL = "admin@papelaria.com"
+# LOGIN_SENHA = "123456"
 
 
 def proximo_id(lista):
@@ -163,16 +165,71 @@ def inserir_perfil():
             else:
                 raise
 
-    return render_template('perfis/perfil_form.html', nome=nome, descricao=descricao)
+    return render_template('perfis/perfil_form.html', acao='inserir', nome=nome, descricao=descricao)
 
 @app.route('/perfis/')
 def listar_perfis():
     perfis = execute_query(
-        'SELECT id_perfil, nome, descricao, criado_em FROM perfis ORDER BY nome',
+        'SELECT id_perfil, nome, descricao, criado_em FROM perfis ORDER BY id_perfil',
         fetch=True
     )
     return render_template('perfis/perfis_listar.html', perfis=perfis)
 
+@app.route('/perfis/<int:id_perfil>/editar', methods=['GET', 'POST'])
+def editar_perfil(id_perfil):
+    # Buscar os dados com o ID que veio na rota
+    perfil = execute_one(
+        'SELECT id_perfil, nome, descricao FROM perfis WHERE id_perfil = %s',
+        (id_perfil,)
+    )
+
+    if perfil is None:
+        abort(404)
+
+    nome = perfil['nome']
+    descricao = perfil['descricao']
+
+    if request.method == 'POST':
+        nome = request.form.get('nome').strip()
+        descricao = request.form.get('descricao').strip()
+
+        try:
+            execute_query('''UPDATE perfis SET nome = %s, descricao = %s WHERE id_perfil = %s
+                          ''',
+                          (nome, descricao, id_perfil)
+                          )
+            return redirect(url_for('listar_perfis'))
+        except Error as erro:
+            if erro.errno == 1062:
+                flash('Já existe um perfil com esse nome', 'danger')
+            else:
+                raise
+
+    return render_template('perfis/perfil_form.html', acao='editar', nome=nome, descricao=descricao, id_perfil=id_perfil)
+    
+@app.route('/perfis/<int:id_perfil>/excluir', methods=['POST'])
+def excluir_perfil(id_perfil):
+    # Verifica se o perfil existe
+    perfil = execute_one(
+        'SELECT id_perfil FROM perfis WHERE id_perfil = %s',
+        (id_perfil,)
+    )
+
+    if perfil is None:
+        abort(404)
+
+
+    # Exclui o perfil
+    try:
+        execute_query('DELETE FROM perfis WHERE id_perfil = %s',
+                      (id_perfil,))
+        flash(f'O perfil foi excluído.', 'success')
+    except Error as erro:
+        if erro.errno == 1451:
+            flash('Não é possível excluir este perfil.', 'danger')
+        else:
+            raise
+    return redirect(url_for('listar_perfis'))
 
 # =======================================================================================================================
 # USUÁRIOS  
@@ -235,6 +292,19 @@ def usuario_excluir(id):
     usuarios = [usuario for usuario in usuarios if usuario["id"] != id]
 
     return redirect(url_for("usuarios_listar"))
+
+# ==============================================================================
+# TELAS DE ERROS
+# ==============================================================================
+
+@app.errorhandler(404)
+def pagina_nao_encontrada(erro):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def erro_no_servidor(erro):
+    return render_template('500.html'), 500
 
 
 @app.route("/produtos")

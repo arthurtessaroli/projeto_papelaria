@@ -8,9 +8,18 @@
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
-            <div class="card-body">
+            <div class="card-header bg-primary text-white fw-bold">
+                {{ 'Editar Perfil' if acao == 'editar' else 'Cadastro de Perfil' }}
+            </div>
+            <div class="card-body p-3">
 
-                <form action="{{ url_for('inserir_perfil') }}" method="post">
+                {% if acao == 'editar' %}
+                    {% set destino = url_for('editar_perfil', id_perfil=id_perfil ) %}
+                {% else %}
+                    {% set destino = url_for('inserir_perfil') %}
+                {% endif %}
+
+                <form action="{{ destino }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="mb-3">
